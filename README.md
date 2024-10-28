@@ -9,66 +9,39 @@ Check the following example on how this parser will translate a Discord message:
 ![image](https://user-images.githubusercontent.com/1405498/131235730-94ba8100-2b42-492f-9479-bbce80c592f0.png)
 
 ```python
-(
-    {'node_type': 'ITALIC',
-     'children': (
-      {'node_type': 'TEXT', 'text_content': 'italic star single'},
-    )},
-    
-    {'node_type': 'TEXT', 'text_content': '\n'},
-    
-    {'node_type': 'ITALIC',
-     'children': (
-        {'node_type': 'TEXT', 'text_content': 'italic underscore single'},
-    )},
-    
-    {'node_type': 'TEXT', 'text_content': '\n'},
-    
-    {'node_type': 'BOLD',
-     'children': (
-        {'node_type': 'TEXT', 'text_content': 'bold single'},
-    )},
-    
-    {'node_type': 'TEXT', 'text_content': '\n'},
-    
-    {'node_type': 'UNDERLINE',
-     'children': (
-        {'node_type': 'TEXT', 'text_content': 'underline single'},
-    )},
-    
-    {'node_type': 'TEXT', 'text_content': '\n'},
-    
-    {'node_type': 'STRIKETHROUGH',
-     'children': (
-        {'node_type': 'TEXT', 'text_content': 'strikethrough single'},
-    )},
-    
-    {'node_type': 'TEXT', 'text_content': '\n\n'},
-    
-    {'node_type': 'QUOTE_BLOCK',
-     'children': (
-        {'node_type': 'TEXT', 'text_content': 'quote\nblock\n'},
-    )},
-    
-    {'node_type': 'TEXT', 'text_content': '\n'},
-    
-    {'node_type': 'CODE_INLINE',
-     'children': (
-        {'node_type': 'TEXT', 'text_content': 'inline code'},
-    )},
-    
-    {'node_type': 'TEXT', 'text_content': '\n\n'},
-    
-    {'node_type': 'QUOTE_BLOCK',
-     'children': (
-        {'node_type': 'CODE_BLOCK',
-         'code_lang': 'python',
-         'children': (
-            {'node_type': 'TEXT', 
-             'text_content': 'code\nblock\nwith\npython\nhighlighting\n'},),
-        },
-    )},
-)
+[
+  {'node_type': 'ITALIC', 'content': 'italic star single', 'children': [
+    {'node_type': 'TEXT', 'content': 'italic star single', 'children': []}
+  ]},
+  {'node_type': 'TEXT', 'content': '\n', 'children': []},
+  {'node_type': 'ITALIC', 'content': 'italic underscore single', 'children': [
+    {'node_type': 'TEXT', 'content': 'italic underscore single', 'children': []}
+  ]},
+  {'node_type': 'TEXT', 'content': '\n', 'children': []},
+  {'node_type': 'BOLD', 'content': 'bold single', 'children': [
+    {'node_type': 'TEXT', 'content': 'bold single', 'children': []}
+  ]},
+  {'node_type': 'TEXT', 'content': '\n', 'children': []},
+  {'node_type': 'UNDERLINE', 'content': 'underline single', 'children': [
+    {'node_type': 'TEXT', 'content': 'underline single', 'children': []}
+  ]},
+  {'node_type': 'TEXT', 'content': '\n', 'children': []},
+  {'node_type': 'STRIKETHROUGH', 'content': 'strikethrough single', 'children': [
+    {'node_type': 'TEXT', 'content': 'strikethrough single', 'children': []}
+  ]},
+  {'node_type': 'TEXT', 'content': '\n\n', 'children': []},
+  {'node_type': 'QUOTE_BLOCK', 'content': 'quote\nblock\n', 'children': [
+    {'node_type': 'TEXT', 'content': 'quote\nblock\n', 'children': []}
+  ]},
+  {'node_type': 'TEXT', 'content': '\n', 'children': []},
+  {'node_type': 'CODE_INLINE', 'content': 'inline code', 'children': [
+    {'node_type': 'TEXT', 'content': 'inline code', 'children': []}
+  ]},
+  {'node_type': 'TEXT', 'content': '\n\n', 'children': []},
+  {'node_type': 'QUOTE_BLOCK', 'content': '```py\ncode\nblock\nwith\npython\nhighlighting\n```', 'children': [
+    {'node_type': 'CODE_BLOCK', 'content': 'code\nblock\nwith\npython\nhighlighting\n', 'code_lang': 'py', 'children': []}
+  ]}
+]
 ```
 
 ### Installation
@@ -105,9 +78,7 @@ QUOTE_BLOCK
 - can not contain another quote block (Discord has no nested quotes)
 
 CODE_BLOCK
-- fields: "children", "code_lang" "content"
-- can only contain a single TEXT node, all other markdown syntax inside the code block
-  is ignored
+- fields: "code_lang" "content"
 - may or may not have a language specifier
 - first newline is stripped according to the same rules that the Discord client uses
 
@@ -183,9 +154,6 @@ with how it's rendered in the Discord client:
 - `***bold and italic***` will be detected as bold-only with extra stars.
   This only happens when the italic and bold stars are right next to each other.
   This does not happen when mixing bold stars with italic underscores.
-- `*italic with whitespace before star closer *`
-  will be detected as italic even though the Discord client won't.
-  Note that Discord doesn't have this weird requirement for `_underscore italic_`.
 - ````
   ||spoilers around
   ```
@@ -197,3 +165,6 @@ with how it's rendered in the Discord client:
   client will only show spoiler bars before and after the code segment, but not on top
   of it.
 - Custom parsers are experimental, tends to work for different pair of values.  
+- The URL matching scheme of Discord is quite complex and not fully understood, so there
+  might be some edge cases where the parser doesn't recognize a URL that the Discord
+  client does, and vice versa.
