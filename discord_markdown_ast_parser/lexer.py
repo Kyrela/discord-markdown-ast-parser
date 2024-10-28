@@ -16,19 +16,19 @@ class Lexing:
         return f"{self.__class__.__name__}({self.regex and self.regex.pattern!r})"
 
 
-URL_REGEX = r"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)"
+URL_REGEX = r"https?:\/\/(www\.)?[-\w@:%.\+~#=]{1,256}\.[a-z]{2,4}\b([-\w@:%.\+~#=?&//]*)"
 
 
 class LexingRule(Lexing, Enum):
     USER_MENTION = r"<@!?(\d{15,20})>"
     ROLE_MENTION = r"<@&(\d{15,20})>"
-    SLASH_COMMAND_MENTION = r"</([a-zA-Z0-9_ ]{2,}):(\d{15,20})>"
+    SLASH_COMMAND_MENTION = r"</([\w ]{2,}):(\d{15,20})>"
     CHANNEL_MENTION = r"<#(\d{15,20})>"
     TIMESTAMP = r"<t:(-?\d+)(?::([tTdDfFR]))?>"
-    EMOJI_CUSTOM = r"<:([a-zA-Z0-9_]{2,}):(\d{15,20})>"
-    EMOJI_CUSTOM_ANIMATED = r"<a:([a-zA-Z0-9_]{2,}):(\d{15,20})>"
+    EMOJI_CUSTOM = r"<:([\w]{2,}):(\d{15,20})>"
+    EMOJI_CUSTOM_ANIMATED = r"<a:([\w]{2,}):(\d{15,20})>"
     EMOJI_UNICODE = r"(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])"
-    EMOJI_UNICODE_ENCODED = r":([a-zA-Z0-9_]+):"
+    EMOJI_UNICODE_ENCODED = r":([\w]+):"
     URL_WITHOUT_PREVIEW_EMBEDDED = fr"\[([^\]]+)\]\(<({URL_REGEX})>\)"
     URL_WITH_PREVIEW_EMBEDDED = fr"\[([^\]]+)\]\(({URL_REGEX})\)"
     URL_WITHOUT_PREVIEW = fr"<{URL_REGEX}>"
